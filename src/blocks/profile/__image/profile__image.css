@@ -8,7 +8,6 @@
   position: relative;
 }
 
-
 .profile__image:hover {
   cursor: pointer;
 }
@@ -47,7 +46,6 @@
 .profile__image:hover::after {
   opacity: 1;
 }
-
 
 @media screen and (max-width: 740px) {
   .profile__image {

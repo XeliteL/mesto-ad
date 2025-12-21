@@ -22,13 +22,12 @@
 @import url('./__list-item/popup__list-item.css');
 @import url('./__list-item/_type/popup__list-item_type_badge.css');
 
-
 .popup {
   font-family: 'Inter', Arial, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
   left: 0;
@@ -38,6 +37,8 @@
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: visibility 0.3s, opacity 0.3s;
+  transition:
+    visibility 0.3s,
+    opacity 0.3s;
   z-index: 10;
 }

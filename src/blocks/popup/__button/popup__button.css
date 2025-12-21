@@ -9,7 +9,11 @@
   justify-content: center;
   background: #000;
   border-radius: 2px;
-  transition: visibility 0s, background-color 0.3s, border-color 0.3s, color 0.3s;
+  transition:
+    visibility 0s,
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
   margin-top: 20px;
   border: 1px solid transparent;
 }
