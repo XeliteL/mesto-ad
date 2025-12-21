@@ -1,0 +1,9 @@
+node_modules/
+.idea/
+*.log
+*.tmp
+.env
+/dist/
+/build/
+*.jar
+*.war

@@ -1,0 +1,33 @@
+{
+  "name": "mesto-ad",
+  "version": "1.0.0",
+  "description": "Стартовый набор для выполнения проектной работы Место",
+  "homepage": "https://github.com/XeliteL/mesto-ad#readme",
+  "bugs": {
+    "url": "https://github.com/XeliteL/mesto-ad/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XeliteL/mesto-ad.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "xD",
+    "check": "prettier --check './**/*.{html,css,js}'",
+    "format": "prettier --write './**/*.{html,css,js}'",
+    "lint": "stylelint '**/*.css'",
+    "lintfix": "stylelint '**/*.css' --fix",
+    "checkAll": "npm run check && npm run lint",
+    "fixAll": "npm run format && npm run lintfix",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "prettier": "^3.7.4",
+    "stylelint": "^16.26.1",
+    "vite": "^7.3.0"
+  }
+}
