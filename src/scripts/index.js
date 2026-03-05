@@ -6,7 +6,6 @@
   Из index.js не допускается что то экспортировать
 */
 
-import { initialCards } from './cards.js';
 import { createCardElement, deleteCard, likeCard } from './components/card.js';
 import {
   openModalWindow,
@@ -14,6 +13,16 @@ import {
   setCloseModalWindowEventListeners,
 } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
+import {
+  createCard,
+  deleteCardRequest,
+  getCardList,
+  getUserInfo,
+  setUserAvatar,
+  setUserInfo,
+} from "./components/api";
+
+let currentUserId = '';
 
 // DOM узлы
 const placesWrap = document.querySelector('.places__list');
@@ -66,34 +75,75 @@ const handlePreviewPicture = ({ name, link }) => {
 
 const handleProfileFormSubmit = (evt) => {
   evt.preventDefault();
-  profileTitle.textContent = profileTitleInput.value;
-  profileDescription.textContent = profileDescriptionInput.value;
-  closeModalWindow(profileFormModalWindow);
+
+  setUserInfo({
+    name: profileTitleInput.value,
+    about: profileDescriptionInput.value,
+  })
+    .then((userData) => {
+      profileTitle.textContent = userData.name;
+      profileDescription.textContent = userData.about;
+
+      closeModalWindow(profileFormModalWindow);
+    }).catch((err) => {
+      console.log(err);
+    });
 };
 
 const handleAvatarFromSubmit = (evt) => {
   evt.preventDefault();
-  profileAvatar.style.backgroundImage = `url(${avatarInput.value})`;
-  closeModalWindow(avatarFormModalWindow);
+
+  setUserAvatar({
+    avatar: avatarInput.value,
+  })
+    .then((userData) => {
+      profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+
+      closeModalWindow(avatarFormModalWindow);
+    }).catch((err) => {
+      console.log(err);
+    });
 };
 
 const handleCardFormSubmit = (evt) => {
   evt.preventDefault();
-  placesWrap.prepend(
-    createCardElement(
-      {
-        name: cardNameInput.value,
-        link: cardLinkInput.value,
-      },
+
+  createCard({
+    name: cardNameInput.value,
+    link: cardLinkInput.value,
+  }).then((cardData) => {
+    const newCard = createCardElement(
+      cardData,
       {
         onPreviewPicture: handlePreviewPicture,
         onLikeIcon: likeCard,
-        onDeleteCard: deleteCard,
+        onDeleteCard: handleDeleteCard,
       }
-    )
-  );
+    );
 
-  closeModalWindow(cardFormModalWindow);
+    if (cardData.owner._id !== currentUserId) {
+      const deleteButton = newCard.querySelector('.card__control-button_type_delete');
+      if (deleteButton) {
+        deleteButton.remove();
+      }
+    }
+
+    placesWrap.prepend(newCard);
+    closeModalWindow(cardFormModalWindow);
+    cardForm.reset();
+  }).catch((err) => {
+    console.log(err);
+  });
+};
+
+const handleDeleteCard = (cardId, cardElement) => {
+  deleteCardRequest(cardId)
+    .then(() => {
+      cardElement.remove();
+    })
+    .catch((err) => {
+      console.log('Ошибка при удалении:', err);
+    });
 };
 
 // EventListeners
@@ -117,19 +167,36 @@ openCardFormButton.addEventListener('click', () => {
   openModalWindow(cardFormModalWindow);
 });
 
-// отображение карточек
-initialCards.forEach((data) => {
-  placesWrap.append(
-    createCardElement(data, {
-      onPreviewPicture: handlePreviewPicture,
-      onLikeIcon: likeCard,
-      onDeleteCard: deleteCard,
-    })
-  );
-});
-
 //настраиваем обработчики закрытия попапов
 const allPopups = document.querySelectorAll('.popup');
 allPopups.forEach((popup) => {
   setCloseModalWindowEventListeners(popup);
 });
+
+Promise.all([getCardList(), getUserInfo()])
+  .then(([cards, userData]) => {
+    currentUserId = userData._id;
+
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+
+    cards.forEach((card) => {
+      const cardElement = createCardElement(card, {
+        onPreviewPicture: handlePreviewPicture,
+        onLikeIcon: likeCard,
+        onDeleteCard: handleDeleteCard,
+      });
+
+      if (card.owner._id !== currentUserId) {
+        const deleteButton = cardElement.querySelector('.card__control-button_type_delete');
+        if (deleteButton) {
+          deleteButton.remove();
+        }
+      }
+
+      placesWrap.append(cardElement);
+    });
+  }).catch((err) => {
+    console.log(err);
+  });
