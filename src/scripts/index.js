@@ -14,6 +14,7 @@ import {
 } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
 import {
+  changeLikeCardStatus,
   createCard,
   deleteCardRequest,
   getCardList,
@@ -116,9 +117,10 @@ const handleCardFormSubmit = (evt) => {
       cardData,
       {
         onPreviewPicture: handlePreviewPicture,
-        onLikeIcon: likeCard,
+        onLikeIcon: handleLikeCard,
         onDeleteCard: handleDeleteCard,
-      }
+      },
+      currentUserId
     );
 
     if (cardData.owner._id !== currentUserId) {
@@ -139,10 +141,27 @@ const handleCardFormSubmit = (evt) => {
 const handleDeleteCard = (cardId, cardElement) => {
   deleteCardRequest(cardId)
     .then(() => {
-      cardElement.remove();
+      deleteCard(cardElement);
     })
     .catch((err) => {
-      console.log('Ошибка при удалении:', err);
+      console.log(err);
+    });
+};
+
+const handleLikeCard = (cardId, likeButton, cardElemnt) => {
+  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+  const likeCountElement = cardElemnt.querySelector('.card__like-count')
+
+  changeLikeCardStatus(cardId, isLiked)
+    .then((updateCard) => {
+      likeButton.classList.toggle('card__like-button_is-active');
+
+      if (likeCountElement) {
+        likeCountElement.textContent = updateCard.likes.length;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
@@ -186,9 +205,9 @@ Promise.all([getCardList(), getUserInfo()])
     cards.forEach((card) => {
       const cardElement = createCardElement(card, {
         onPreviewPicture: handlePreviewPicture,
-        onLikeIcon: likeCard,
-        onDeleteCard: handleDeleteCard,
-      });
+        onLikeIcon: handleLikeCard,
+        onDeleteCard: handleDeleteCard
+      }, currentUserId);
 
       if (card.owner._id !== currentUserId) {
         const deleteButton = cardElement.querySelector('.card__control-button_type_delete');
