@@ -297,7 +297,6 @@ function handleCardsInformation() {
 
       const topCards = [...cards]
         .sort((a, b) => (b.likes?.length ?? 0) - (a.likes?.length ?? 0))
-        .slice(0, 3);
 
       renderInfo(usersCount, likesCount, maxLikesFromOne, championName);
       renderTopCards(topCards);
