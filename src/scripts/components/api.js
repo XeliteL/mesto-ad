@@ -1,8 +1,8 @@
 const config = {
-  baseUrl: "https://mesto.nomoreparties.co/v1/apf-cohort-202",
+  baseUrl: 'https://mesto.nomoreparties.co/v1/apf-cohort-202',
   headers: {
-    authorization: "765a12e7-b94e-4254-a42d-c26275739cdf",
-    "Content-Type": "application/json",
+    authorization: '765a12e7-b94e-4254-a42d-c26275739cdf',
+    'Content-Type': 'application/json',
   },
 };
 
@@ -24,7 +24,7 @@ export const getCardList = () => {
 
 export const setUserInfo = ({ name, about }) => {
   return fetch(`${config.baseUrl}/users/me`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       name,
@@ -35,7 +35,7 @@ export const setUserInfo = ({ name, about }) => {
 
 export const setUserAvatar = ({ avatar }) => {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       avatar,
@@ -45,7 +45,7 @@ export const setUserAvatar = ({ avatar }) => {
 
 export const createCard = ({ name, link }) => {
   return fetch(`${config.baseUrl}/cards`, {
-    method: "POST",
+    method: 'POST',
     headers: config.headers,
     body: JSON.stringify({
       name,
@@ -56,14 +56,14 @@ export const createCard = ({ name, link }) => {
 
 export const deleteCardRequest = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: config.headers,
   }).then(getResponseData);
 };
 
 export const changeLikeCardStatus = (cardID, isLiked) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
-    method: isLiked ?  "DELETE" : "PUT",
+    method: isLiked ? 'DELETE' : 'PUT',
     headers: config.headers,
   }).then((res) => getResponseData(res));
 };

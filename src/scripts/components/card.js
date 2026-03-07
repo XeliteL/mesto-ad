@@ -40,13 +40,15 @@ export const createCardElement = (
   }
 
   if (onLikeIcon) {
-    likeButton.addEventListener('click', () => onLikeIcon(
-      data._id, likeButton, cardElement
-    ));
+    likeButton.addEventListener('click', () =>
+      onLikeIcon(data._id, likeButton, cardElement)
+    );
   }
 
   if (onDeleteCard) {
-    deleteButton.addEventListener('click', () => onDeleteCard(data._id, cardElement));
+    deleteButton.addEventListener('click', () =>
+      onDeleteCard(data._id, cardElement)
+    );
   }
 
   if (onPreviewPicture) {
