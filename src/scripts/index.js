@@ -57,15 +57,17 @@ const avatarFormModalWindow = document.querySelector('.popup_type_edit-avatar');
 const avatarForm = avatarFormModalWindow.querySelector('.popup__form');
 const avatarInput = avatarForm.querySelector('.popup__input');
 
-const logo = document.querySelector('.header__logo')
+const logo = document.querySelector('.header__logo');
 const infoPopup = document.querySelector('.popup_type_info');
 const infoContainer = infoPopup.querySelector('.popup__info');
 const listContainer = infoPopup.querySelector('.popup__list');
 
-const infoTemplate = document
-  .querySelector('#popup-info-definition-template').content;
-const cardTemplate = document
-  .querySelector('#popup-info-user-preview-template').content;
+const infoTemplate = document.querySelector(
+  '#popup-info-definition-template'
+).content;
+const cardTemplate = document.querySelector(
+  '#popup-info-user-preview-template'
+).content;
 
 // Создание объекта с настройками валидации
 const validationSettings = {
@@ -198,12 +200,8 @@ const handleDeleteCard = (cardId, cardElement) => {
 };
 
 const handleLikeCard = (cardId, likeButton, cardElemnt) => {
-  const isLiked = likeButton.classList.contains(
-    'card__like-button_is-active'
-  );
-  const likeCountElement = cardElemnt.querySelector(
-    '.card__like-count'
-  );
+  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+  const likeCountElement = cardElemnt.querySelector('.card__like-count');
 
   changeLikeCardStatus(cardId, isLiked)
     .then((updateCard) => {
@@ -260,17 +258,18 @@ function handleCardsInformation() {
       return;
     }
 
-    topCards.forEach(card => {
+    topCards.forEach((card) => {
       listContainer.append(createTopCardItem(card));
     });
   }
 
   getCardList()
     .then((cards) => {
-      const usersCount = new Set(cards.map(card => card.owner._id)).size;
+      const usersCount = new Set(cards.map((card) => card.owner._id)).size;
 
       const likesCount = cards.reduce(
-        (sum, card) => sum + (card.likes?.length ?? 0), 0
+        (sum, card) => sum + (card.likes?.length ?? 0),
+        0
       );
 
       const authorLikes = new Map();
@@ -280,35 +279,32 @@ function handleCardsInformation() {
         if (!authorLikes.has(ownerId)) {
           authorLikes.set(ownerId, {
             name: card.owner.name,
-            likesReceived: 0
+            likesReceived: 0,
           });
         }
 
         authorLikes.get(ownerId).likesReceived += card.likes?.length ?? 0;
-      })
+      });
 
-      const authors= [...authorLikes.values()];
+      const authors = [...authorLikes.values()];
       const maxLikesFromOne = Math.max(
-        ...authors.map(a => a.likesReceived),
+        ...authors.map((a) => a.likesReceived),
         0
       );
 
-      const champion = authors.find(
-        a => a.likesReceived === maxLikesFromOne
-      );
+      const champion = authors.find((a) => a.likesReceived === maxLikesFromOne);
       const championName = champion ? champion.name : 'Чемпиона нет(';
 
       const topCards = [...cards]
-        .sort((a, b) => (
-          b.likes?.length ?? 0) - (a.likes?.length ?? 0
-        ))
+        .sort((a, b) => (b.likes?.length ?? 0) - (a.likes?.length ?? 0))
         .slice(0, 3);
 
       renderInfo(usersCount, likesCount, maxLikesFromOne, championName);
       renderTopCards(topCards);
 
       openModalWindow(infoPopup);
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.error(err);
     });
 }
