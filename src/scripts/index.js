@@ -314,10 +314,9 @@ cardForm.addEventListener('submit', handleCardFormSubmit);
 avatarForm.addEventListener('submit', handleAvatarFromSubmit);
 
 openProfileFormButton.addEventListener('click', () => {
+  clearValidation(profileForm, validationSettings);
   profileTitleInput.value = profileTitle.textContent;
   profileDescriptionInput.value = profileDescription.textContent;
-
-  clearValidation(profileForm, validationSettings);
   openModalWindow(profileFormModalWindow);
 });
 
