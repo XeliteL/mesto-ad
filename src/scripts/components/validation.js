@@ -24,11 +24,6 @@ const checkInputValidity = (formElement, inputElement, config) => {
       inputElement.validity.patternMismatch
     ) {
       errorMessage = inputElement.dataset.errorMessage;
-    } else if (
-      inputElement.validity.tooShort ||
-      inputElement.validity.tooLong
-    ) {
-      errorMessage = inputElement.validationMessage;
     } else {
       errorMessage = inputElement.validationMessage;
     }
@@ -87,8 +82,6 @@ export const clearValidation = (formElement, config) => {
 
   const button = formElement.querySelector(config.submitButtonSelector);
   disableSubmitButton(button, config);
-
-  formElement.reset();
 };
 
 export const enableValidation = (config) => {

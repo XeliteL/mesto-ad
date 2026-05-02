@@ -6,7 +6,7 @@
   Из index.js не допускается что то экспортировать
 */
 
-import { createCardElement, deleteCard, likeCard } from './components/card.js';
+import { createCardElement, deleteCard, likeCard, updateLikeStatus, isCardLiked } from './components/card.js';
 
 import {
   openModalWindow,
@@ -167,15 +167,6 @@ const handleCardFormSubmit = (evt) => {
         currentUserId
       );
 
-      if (cardData.owner._id !== currentUserId) {
-        const deleteButton = newCard.querySelector(
-          '.card__control-button_type_delete'
-        );
-        if (deleteButton) {
-          deleteButton.remove();
-        }
-      }
-
       placesWrap.prepend(newCard);
       closeModalWindow(cardFormModalWindow);
       cardForm.reset();
@@ -199,17 +190,12 @@ const handleDeleteCard = (cardId, cardElement) => {
     });
 };
 
-const handleLikeCard = (cardId, likeButton, cardElemnt) => {
-  const isLiked = likeButton.classList.contains('card__like-button_is-active');
-  const likeCountElement = cardElemnt.querySelector('.card__like-count');
+const handleLikeCard = (cardId, likeButton, cardElement) => {
+  const liked = isCardLiked(likeButton);
 
-  changeLikeCardStatus(cardId, isLiked)
+  changeLikeCardStatus(cardId, liked)
     .then((updateCard) => {
-      likeButton.classList.toggle('card__like-button_is-active');
-
-      if (likeCountElement) {
-        likeCountElement.textContent = updateCard.likes.length;
-      }
+      updateLikeStatus(cardElement, updateCard, currentUserId)
     })
     .catch((err) => {
       console.log(err);
@@ -297,6 +283,7 @@ function handleCardsInformation() {
 
       const topCards = [...cards]
         .sort((a, b) => (b.likes?.length ?? 0) - (a.likes?.length ?? 0))
+        .slice(0, 3)
 
       renderInfo(usersCount, likesCount, maxLikesFromOne, championName);
       renderTopCards(topCards);
@@ -321,11 +308,13 @@ openProfileFormButton.addEventListener('click', () => {
 });
 
 profileAvatar.addEventListener('click', () => {
+  avatarForm.reset();
   clearValidation(avatarForm, validationSettings);
   openModalWindow(avatarFormModalWindow);
 });
 
 openCardFormButton.addEventListener('click', () => {
+  cardForm.reset();
   clearValidation(cardForm, validationSettings);
   openModalWindow(cardFormModalWindow);
 });
@@ -356,15 +345,6 @@ Promise.all([getCardList(), getUserInfo()])
         },
         currentUserId
       );
-
-      if (card.owner._id !== currentUserId) {
-        const deleteButton = cardElement.querySelector(
-          '.card__control-button_type_delete'
-        );
-        if (deleteButton) {
-          deleteButton.remove();
-        }
-      }
 
       placesWrap.append(cardElement);
     });
